@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipment Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            text-align: center;
+        }
+        input, select {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Shipment Tracking Checker</h2>
+    <p>Enter your tracking numbers (separated by commas) and select a carrier:</p>
+    <input type="text" id="trackingNumber" placeholder="Enter Tracking Numbers">
+    <select id="carrierSelect">
+        <option value="AAA Cooper">AAA Cooper</option>
+        <option value="ABF Freight">ABF Freight</option>
+        <option value="Central Transport">Central Transport</option>
+        <option value="Daylight">Daylight</option>
+        <option value="Estes Express">Estes Express</option>
+        <option value="FedEx Freight">FedEx Freight</option>
+        <option value="R&L Carriers">R&L Carriers</option>
+        <option value="Roadrunner">Roadrunner</option>
+        <option value="SAIA">SAIA</option>
+        <option value="Southeastern Freight Lines">Southeastern Freight Lines</option>
+        <option value="TForce">TForce</option>
+        <option value="UPS">UPS</option>
+        <option value="XPO Logistics">XPO Logistics</option>
+    </select>
+    <button onclick="trackShipment()">Track</button>
+    <button onclick="clearTrackingNumber()">Clear</button>
+
+    <script>
+        function getTrackingUrl(carrier, trackingNumbers) {
+            const urls = {
+                "AAA Cooper": `https://www.aaacooper.com/track?pro=${trackingNumbers}`,
+                "ABF Freight": `https://view.arcb.com/nlo/tools/tracking/${trackingNumbers}`,
+                "Central Transport": `https://www.centraltransport.com/tracking?pro=${trackingNumbers}`,
+                "Daylight": `https://www.dylt.com/track?tracking=${trackingNumbers}`,
+                "Estes Express": `https://www.estes-express.com/myestes/shipment-tracking/`,
+                "FedEx Freight": `https://www.fedex.com/fedextrack/?trknbr=${trackingNumbers.split(',').join(',')}`,
+                "R&L Carriers": `https://www.rlcarriers.com/freight/shipping/tracking?pro=${trackingNumbers}`,
+                "Roadrunner": `https://tools.rrts.com/LTLTrack/?searchValues=${trackingNumbers}`,
+                "SAIA": `https://www.saia.com/tracing?trknbr=${trackingNumbers}`,
+                "Southeastern Freight Lines": `https://www.sefl.com/webconnect/tracing?Type=PN&${trackingNumbers.split(',').map((num, index) => `RefNum${index + 1}=${num}`).join('&')}`,
+                "TForce": `https://www.tforcefreight.com/ltl/apps/Tracking?tracknum=${trackingNumbers}`,
+                "UPS": `https://www.ups.com/track?tracknum=${trackingNumbers}`,
+                "XPO Logistics": `https://ext-web.ltl-xpo.com/public-app/shipments?${trackingNumbers.split(',').map(num => 'referenceNumber=' + num).join('&')}`
+            };
+            return urls[carrier] || null;
+        }
+
+        function trackShipment() {
+            var trackingNumbers = document.getElementById("trackingNumber").value.trim();
+            var selectedCarrier = document.getElementById("carrierSelect").value;
+            
+            if (trackingNumbers === "") {
+                alert("Please enter at least one tracking number.");
+                return;
+            }
+            
+            var trackingUrl = getTrackingUrl(selectedCarrier, trackingNumbers);
+            if (trackingUrl) {
+                window.open(trackingUrl, '_blank');
+            } else {
+                alert("Invalid tracking number or carrier not supported.");
+            }
+        }
+
+        function clearTrackingNumber() {
+            document.getElementById("trackingNumber").value = "";
+        }
+    </script>
+</body>
+</html>
